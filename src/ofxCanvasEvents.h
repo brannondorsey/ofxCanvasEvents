@@ -25,7 +25,7 @@
 #pragma once
 
 #include "ofMain.h"
-#include "ofxPointer.h"
+//#include "ofxPointer.h"
 #include "ofxJSONRPC.h"
 #include "ofxHTTP.h"
 

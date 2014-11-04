@@ -127,6 +127,7 @@ void CanvasEvents::notifyCanvasEventRecieved(ofx::JSONRPC::MethodArgs& args)
         else if (type == "mousePressed")
         {
 
+            cout << args.params.toStyledString() << endl;
             int button = args.params["button"].asInt();
             int x = args.params["x"].asInt();
             int y = args.params["y"].asInt();
