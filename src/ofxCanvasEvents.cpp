@@ -29,7 +29,9 @@ std::string CanvasEvents::EVENT_METHOD_PREFIX = "HTMLCanvasEvent-";
     
 CanvasEvents::CanvasEvents(HTTP::BasicJSONRPCServerSettings settings):
 _bMouseOver(false),
-_bInterpolateMousePos(true)
+_bInterpolateMousePos(true),
+_canvasWidth(0),
+_canvasHeight(0)
 {
     
     _server = HTTP::BasicJSONRPCServer::makeShared(settings);
@@ -112,8 +114,8 @@ HTTP::BasicJSONRPCServer::SharedPtr CanvasEvents::getServer()
 void CanvasEvents::_canvasSize(ofx::JSONRPC::MethodArgs& args)
 {
         
-    int width = args.params["width"].asInt();
-    int height = args.params["height"].asInt();
+    _canvasWidth = args.params["width"].asInt();
+    _canvasHeight = args.params["height"].asInt();
     string aspect = args.params["aspect"].asString();
 
     float appAspect = (float) ofGetWidth()/ (float) ofGetHeight();
@@ -121,7 +123,7 @@ void CanvasEvents::_canvasSize(ofx::JSONRPC::MethodArgs& args)
     s.precision(3);
     s << appAspect;
     
-    if (width != ofGetWidth() && height != ofGetHeight()) {
+    if (_canvasWidth != ofGetWidth() && _canvasHeight != ofGetHeight()) {
         ofLogNotice() << "ofxCanvas: The size of the HTML canvas does not match"
         << " the size of the app window."
         << " Mouse and touch positions will be interpolated.";
