@@ -2,7 +2,6 @@ ofxIO
 ofxJSON
 ofxJSONRPC
 ofxMediaType
-ofxPointer
 ofxSSLManager
 ofxTaskQueue
 addons

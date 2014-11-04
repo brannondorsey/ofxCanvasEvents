@@ -25,7 +25,6 @@
 #pragma once
 
 #include "ofMain.h"
-//#include "ofxPointer.h"
 #include "ofxJSONRPC.h"
 #include "ofxHTTP.h"
 
@@ -41,59 +40,17 @@ public:
     CanvasEvents(HTTP::BasicJSONRPCServerSettings settings = HTTP::BasicJSONRPCServerSettings());
     virtual ~CanvasEvents();
     
-    void notifyCanvasEventRecieved(ofx::JSONRPC::MethodArgs& args);
+    bool isMouseOver() const;
     
     HTTP::BasicJSONRPCServer::SharedPtr getServer();
     
-//template<class ListenerClass>
-//void registerEvents(ListenerClass* listener,
-//                    int prio = OF_EVENT_ORDER_AFTER_APP)
-//{
-//    ofAddListener(PointerEvents().onPointerDown, listener, &ListenerClass::onPointerDown, prio);
-//    ofAddListener(PointerEvents().onPointerUp, listener, &ListenerClass::onPointerUp, prio);
-//    ofAddListener(PointerEvents().onPointerMove, listener, &ListenerClass::onPointerMove, prio);
-//    ofAddListener(PointerEvents().onPointerCancel, listener, &ListenerClass::onPointerCancel, prio);
-//    
-//    ofAddListener(ofEvents().keyPressed, listener, &ListenerClass::keyPressed, prio);
-//    ofAddListener(ofEvents().keyReleased, listener, &ListenerClass::keyReleased, prio);
-//    
-//}
-
-
-//template<class ListenerClass>
-//void unRegisterEvents(ListenerClass* listener,
-//                      int prio = OF_EVENT_ORDER_AFTER_APP)
-//{
-//    ofRemoveListener(PointerEvents().onPointerDown, listener, &ListenerClass::onPointerDown);
-//    ofRemoveListener(PointerEvents().onPointerUp, listener, &ListenerClass::onPointerUp);
-//    ofRemoveListener(PointerEvents().onPointerMove, listener, &ListenerClass::onPointerMove);
-//    ofRemoveListener(PointerEvents().onPointerCancel, listener, &ListenerClass::onPointerCancel);
-//    ofRemoveListener(ofEvents().keyPressed, listener, &ListenerClass::keyPressed, prio);
-//    ofRemoveListener(ofEvents().keyReleased, listener, &ListenerClass::keyReleased, prio);
-//
-//}
-
-
-//template<class ListenerClass>
-//void registerGestureEvents(ListenerClass* listener,
-//                           int prio = OF_EVENT_ORDER_AFTER_APP)
-//{
-//    ofAddListener(PointerGestureEvents().onPointerDoublePress, listener, &ListenerClass::onPointerDoublePress, prio);
-//    ofAddListener(PointerGestureEvents().onPointerPressAndHold, listener, &ListenerClass::onPointerPressAndHold, prio);
-//}
-//
-//
-//template<class ListenerClass>
-//void unRegisterGestureEvents(ListenerClass* listener,
-//                             int prio = OF_EVENT_ORDER_AFTER_APP)
-//{
-//    ofRemoveListener(PointerGestureEvents().onPointerDoublePress, listener, &ListenerClass::onPointerDoublePress, prio);
-//    ofRemoveListener(PointerGestureEvents().onPointerPressAndHold, listener, &ListenerClass::onPointerPressAndHold, prio);
-//}
-
 protected:
+
+    void _notifyCanvasEventRecieved(ofx::JSONRPC::MethodArgs& args);
+
+    bool _bMouseOver;
     
-    HTTP::BasicJSONRPCServer::SharedPtr server;
+    HTTP::BasicJSONRPCServer::SharedPtr _server;
 
 private:
 

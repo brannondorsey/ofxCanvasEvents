@@ -27,73 +27,54 @@
 namespace ofx {
 std::string CanvasEvents::EVENT_METHOD_PREFIX = "HTMLCanvasEvent-";
     
-CanvasEvents::CanvasEvents(HTTP::BasicJSONRPCServerSettings settings)
+CanvasEvents::CanvasEvents(HTTP::BasicJSONRPCServerSettings settings):
+_bMouseOver(false)
 {
     
-    server = HTTP::BasicJSONRPCServer::makeShared(settings);
+    _server = HTTP::BasicJSONRPCServer::makeShared(settings);
     
-    server->registerMethod(EVENT_METHOD_PREFIX + "keyPressed",
+    _server->registerMethod(EVENT_METHOD_PREFIX + "mouseOver",
+                            "Returns a random chunk of text to the client.",
+                            this,
+                            &CanvasEvents::_notifyCanvasEventRecieved);
+    
+    _server->registerMethod(EVENT_METHOD_PREFIX + "mouseOut",
+                            "Returns a random chunk of text to the client.",
+                            this,
+                            &CanvasEvents::_notifyCanvasEventRecieved);
+    
+    _server->registerMethod(EVENT_METHOD_PREFIX + "keyPressed",
                            "Returns a random chunk of text to the client.",
                            this,
-                           &CanvasEvents::notifyCanvasEventRecieved);
+                           &CanvasEvents::_notifyCanvasEventRecieved);
     
-    server->registerMethod(EVENT_METHOD_PREFIX + "keyReleased",
+    _server->registerMethod(EVENT_METHOD_PREFIX + "keyReleased",
                            "Sets text from the user.",
                            this,
-                           &CanvasEvents::notifyCanvasEventRecieved);
+                           &CanvasEvents::_notifyCanvasEventRecieved);
     
-    server->registerMethod(EVENT_METHOD_PREFIX + "mousePressed",
+    _server->registerMethod(EVENT_METHOD_PREFIX + "mousePressed",
                            "Send a JSONRPC Ping Notification",
                            this,
-                           &CanvasEvents::notifyCanvasEventRecieved);
+                           &CanvasEvents::_notifyCanvasEventRecieved);
     
-    server->registerMethod(EVENT_METHOD_PREFIX + "mouseReleased",
+    _server->registerMethod(EVENT_METHOD_PREFIX + "mouseReleased",
                            "Send a JSONRPC Ping Notification",
                            this,
-                           &CanvasEvents::notifyCanvasEventRecieved);
+                           &CanvasEvents::_notifyCanvasEventRecieved);
     
-    server->registerMethod(EVENT_METHOD_PREFIX + "mouseMoved",
+    _server->registerMethod(EVENT_METHOD_PREFIX + "mouseMoved",
                            "Send a JSONRPC Ping Notification",
                            this,
-                           &CanvasEvents::notifyCanvasEventRecieved);
+                           &CanvasEvents::_notifyCanvasEventRecieved);
     
-    server->registerMethod(EVENT_METHOD_PREFIX + "mouseDragged",
+    _server->registerMethod(EVENT_METHOD_PREFIX + "mouseDragged",
                            "Send a JSONRPC Ping Notification",
                            this,
-                           &CanvasEvents::notifyCanvasEventRecieved);
-    
-//    server->registerMethod(EVENT_METHOD_PREFIX + "pointerup",
-//                           "Send a JSONRPC Pong Notification",
-//                           this,
-//                           &CanvasEvents::notifyCanvasEventRecieved);
-//    
-//    server->registerMethod(EVENT_METHOD_PREFIX + "pointerover",
-//                           "Returns a random chunk of text to the client.",
-//                           this,
-//                           &CanvasEvents::notifyCanvasEventRecieved);
-//    
-//    server->registerMethod(EVENT_METHOD_PREFIX + "pointerout",
-//                           "Sets text from the user.",
-//                           this,
-//                           &CanvasEvents::notifyCanvasEventRecieved);
-//    
-//    server->registerMethod(EVENT_METHOD_PREFIX + "pointerenter",
-//                           "Send a JSONRPC Ping Notification",
-//                           this,
-//                           &CanvasEvents::notifyCanvasEventRecieved);
-//    
-//    server->registerMethod(EVENT_METHOD_PREFIX + "pointerleave",
-//                           "Send a JSONRPC Pong Notification",
-//                           this,
-//                           &CanvasEvents::notifyCanvasEventRecieved);
-//    
-//    server->registerMethod(EVENT_METHOD_PREFIX + "pointercancel",
-//                           "Send a JSONRPC Pong Notification",
-//                           this,
-//                           &CanvasEvents::notifyCanvasEventRecieved);
+                           &CanvasEvents::_notifyCanvasEventRecieved);
     
     // Start the server.
-    server->start();
+    _server->start();
     
 }
 
@@ -102,13 +83,30 @@ CanvasEvents::~CanvasEvents()
         
 }
     
-void CanvasEvents::notifyCanvasEventRecieved(ofx::JSONRPC::MethodArgs& args)
+bool CanvasEvents::isMouseOver() const
+{
+    return _bMouseOver;
+}
+    
+HTTP::BasicJSONRPCServer::SharedPtr CanvasEvents::getServer()
+{
+    return _server;
+}
+    
+void CanvasEvents::_notifyCanvasEventRecieved(ofx::JSONRPC::MethodArgs& args)
 {
     if (!args.params["type"].empty()) {
         
         std::string type = args.params["type"].asString();
 
-        if (type == "keyPressed")
+        if (type == "mouseOver") {
+            _bMouseOver = true;
+        }
+        else if (type == "mouseOut")
+        {
+            _bMouseOver = false;
+        }
+        else if (type == "keyPressed")
         {
 
             int key = args.params["key"].asInt();
@@ -167,10 +165,5 @@ void CanvasEvents::notifyCanvasEventRecieved(ofx::JSONRPC::MethodArgs& args)
     }
 }
     
-HTTP::BasicJSONRPCServer::SharedPtr CanvasEvents::getServer()
-{
-    return server;
-}
-
 };
 

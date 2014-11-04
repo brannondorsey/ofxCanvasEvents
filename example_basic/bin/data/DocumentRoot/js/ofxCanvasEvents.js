@@ -1,6 +1,6 @@
 // =============================================================================
 //
-// Copyright (c) 2009-2013 Christopher Baker <http://christopherbaker.net>
+// Copyright (c) 2014 Brannon Dorsey <http://brannondorsey.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,64 +20,34 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 //
-// =============================================================================
-
-var JSONRPCClient; ///< The core JSONRPC WebSocket client.
-var EVENT_METHOD_PREFIX = 'HTMLCanvasEvent-';
-
-function addError(error) {
-    console.log(error);
-}
-
-function onWebSocketOpen(ws) {
-    console.log("on open");
-    console.log(ws);
-}
-
-function onWebSocketMessage(evt) {
-    console.log("on message:");
-    console.log(evt.data);
-}
-
-function onWebSocketClose() {
-    console.log("on close");
-}
-
-function onWebSocketError() {
-    console.log("on error");
-}  
+// ============================================================================= 
 
 $(document).ready(function() {
 
-    // Initialize our JSONRPCClient
-    JSONRPCClient = new $.JsonRpcClient({
-        ajaxUrl: getDefaultPostURL(),
-        socketUrl: getDefaultWebSocketURL(), // get a websocket for the localhost
-        onmessage: onWebSocketMessage,
-        onopen: onWebSocketOpen,
-        onclose: onWebSocketClose,
-        onerror: onWebSocketError
-    });
+    var JSONRPCClient; ///< The core JSONRPC WebSocket client.
+    var EVENT_METHOD_PREFIX = 'HTMLCanvasEvent-';
 
-    var canvasWrapper = document.getElementById('canvas-wrapper');
-    var canvas = document.getElementById('ofxCanvasEvents-canvas');
-    var context = canvas.getContext('2d');
-
-    // canvas.addEventListener('pointerdown',   sendEventToApp);
-    // canvas.addEventListener('pointerup',     sendEventToApp);
-    // canvas.addEventListener('pointermove',   sendEventToApp);
-    // canvas.addEventListener('pointerover',   sendEventToApp);
-    // canvas.addEventListener('pointerout',    sendEventToApp);
-    // canvas.addEventListener('pointerenter',  sendEventToApp);
-    // canvas.addEventListener('pointerleave',  sendEventToApp);
-    // canvas.addEventListener('pointercancel', sendEventToApp);
-    
-    var events = ['mouseup', 'mousedown', 'mousemove', 'keydown', 'keyup'];
-    var bMouseDown = false;
-
-    for (var i = 0; i < events.length; i++) {
-        canvas.addEventListener(events[i], sendEventToApp);
+    function addError(error) {
+        console.log(error);
     }
+
+    function onWebSocketOpen(ws) {
+        console.log("on open");
+        console.log(ws);
+    }
+
+    function onWebSocketMessage(evt) {
+        console.log("on message:");
+        console.log(evt.data);
+    }
+
+    function onWebSocketClose() {
+        console.log("on close");
+    }
+
+    function onWebSocketError() {
+        console.log("on error");
+    } 
 
     function sendEventToApp(evt) {
         
@@ -92,8 +62,20 @@ $(document).ready(function() {
         }
 
         var data = {};
-        
+
         switch (evt.type) {
+
+            case "mouseover":
+
+            data.type = "mouseOver";
+            
+            break;
+
+            case "mouseout":
+
+            data.type = "mouseOut";
+
+            break;
 
             case "mousedown":
             
@@ -143,12 +125,35 @@ $(document).ready(function() {
             break;
         }
 
-
         JSONRPCClient.call(
             EVENT_METHOD_PREFIX + data.type,
             data,
-            function(result) { console.log(result) },
-            function(error) { console.error(error) });
+            function(result) {
+
+            },
+            function(error) {
+
+            }
+        );
     }
 
+    // Initialize our JSONRPCClient
+    JSONRPCClient = new $.JsonRpcClient({
+        ajaxUrl: getDefaultPostURL(),
+        socketUrl: getDefaultWebSocketURL(), // get a websocket for the localhost
+        onmessage: onWebSocketMessage,
+        onopen: onWebSocketOpen,
+        onclose: onWebSocketClose,
+        onerror: onWebSocketError
+    });
+
+    var canvas = document.getElementById('ofxCanvasEvents-canvas');
+    var context = canvas.getContext('2d');
+    
+    var events = ['mouseover', 'mouseout', 'mouseup', 'mousedown', 'mousemove', 'keydown', 'keyup'];
+    var bMouseDown = false;
+
+    for (var i = 0; i < events.length; i++) {
+        canvas.addEventListener(events[i], sendEventToApp);
+    }
 });
