@@ -32,8 +32,23 @@ $(document).ready(function() {
     }
 
     function onWebSocketOpen(ws) {
-        console.log("on open");
-        console.log(ws);
+
+        var data = {
+            width: canvas.width,
+            height: canvas.height,
+            aspect: (canvas.width/canvas.height).toFixed(2)
+        };
+
+        console.log(data);
+
+        JSONRPCClient.call(
+            EVENT_METHOD_PREFIX + 'canvasSize',
+            data,
+            function(result) {
+                console.log(result);
+            },
+            addError
+        );
     }
 
     function onWebSocketMessage(evt) {
@@ -57,7 +72,7 @@ $(document).ready(function() {
 
             var mouse = {
                 x: evt.x - canvas.offsetLeft,
-                y: evt.y - canvas.offsetTop
+                y: evt.y - canvas.offsetTop,
             };
         }
 
@@ -82,7 +97,9 @@ $(document).ready(function() {
             data.type = "mousePressed";
             data.button = evt.button;
             data.x = mouse.x;
-            data.y = mouse.y;
+            data.y = canvas.y;
+            data.w = canvas.width;
+            data.h = canvas.height;
 
             bMouseDown = true;                     
                                
@@ -94,6 +111,8 @@ $(document).ready(function() {
             data.button = evt.button;
             data.x = mouse.x;
             data.y = mouse.y;
+            data.w = canvas.width;
+            data.h = canvas.height;
 
             bMouseDown = false;               
                                
@@ -105,6 +124,8 @@ $(document).ready(function() {
             data.button = evt.button;
             data.x = mouse.x;
             data.y = mouse.y;
+            data.w = canvas.width;
+            data.h = canvas.height;
 
             data.type = bMouseDown ? "mouseDragged" : "mouseMoved";                    
                                
@@ -131,10 +152,18 @@ $(document).ready(function() {
             function(result) {
 
             },
-            function(error) {
-
-            }
+            addError
         );
+    }
+
+    var canvas = document.getElementById('ofxCanvasEvents-canvas');
+    var context = canvas.getContext('2d');
+    
+    var events = ['mouseover', 'mouseout', 'mouseup', 'mousedown', 'mousemove', 'keydown', 'keyup'];
+    var bMouseDown = false;
+
+    for (var i = 0; i < events.length; i++) {
+        canvas.addEventListener(events[i], sendEventToApp);
     }
 
     // Initialize our JSONRPCClient
@@ -147,13 +176,4 @@ $(document).ready(function() {
         onerror: onWebSocketError
     });
 
-    var canvas = document.getElementById('ofxCanvasEvents-canvas');
-    var context = canvas.getContext('2d');
-    
-    var events = ['mouseover', 'mouseout', 'mouseup', 'mousedown', 'mousemove', 'keydown', 'keyup'];
-    var bMouseDown = false;
-
-    for (var i = 0; i < events.length; i++) {
-        canvas.addEventListener(events[i], sendEventToApp);
-    }
 });

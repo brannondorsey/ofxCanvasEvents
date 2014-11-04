@@ -20,6 +20,8 @@ class ofApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
 
+        int lastKeyPressed;
         std::string message;
+        ofVec2f mouse;
         ofx::CanvasEvents canvasEvents;
 };

@@ -4,6 +4,5 @@ ofxJSONRPC
 ofxMediaType
 ofxSSLManager
 ofxTaskQueue
-addons
 ofxCanvasEvents
 ofxHTTP

@@ -28,7 +28,8 @@ namespace ofx {
 std::string CanvasEvents::EVENT_METHOD_PREFIX = "HTMLCanvasEvent-";
     
 CanvasEvents::CanvasEvents(HTTP::BasicJSONRPCServerSettings settings):
-_bMouseOver(false)
+_bMouseOver(false),
+_bInterpolateMousePos(true)
 {
     
     _server = HTTP::BasicJSONRPCServer::makeShared(settings);
@@ -73,6 +74,11 @@ _bMouseOver(false)
                            this,
                            &CanvasEvents::_notifyCanvasEventRecieved);
     
+    _server->registerMethod(EVENT_METHOD_PREFIX + "canvasSize",
+                            "Send a JSONRPC Ping Notification",
+                            this,
+                            &CanvasEvents::_canvasSize);
+    
     // Start the server.
     _server->start();
     
@@ -83,14 +89,60 @@ CanvasEvents::~CanvasEvents()
         
 }
     
+void CanvasEvents::setInterpolateMousePos(bool b)
+{
+    _bInterpolateMousePos = b;
+}
+    
 bool CanvasEvents::isMouseOver() const
 {
     return _bMouseOver;
 }
     
+bool CanvasEvents::getInterpolateMousePos() const
+{
+    return _bInterpolateMousePos;
+}
+    
 HTTP::BasicJSONRPCServer::SharedPtr CanvasEvents::getServer()
 {
     return _server;
+}
+    
+void CanvasEvents::_canvasSize(ofx::JSONRPC::MethodArgs& args)
+{
+        
+    int width = args.params["width"].asInt();
+    int height = args.params["height"].asInt();
+    string aspect = args.params["aspect"].asString();
+
+    float appAspect = (float) ofGetWidth()/ (float) ofGetHeight();
+    std::stringstream s;
+    s.precision(3);
+    s << appAspect;
+    
+    if (width != ofGetWidth() && height != ofGetHeight()) {
+        ofLogNotice() << "ofxCanvas: The size of the HTML canvas does not match"
+        << " the size of the app window."
+        << " Mouse and touch positions will be interpolated.";
+    }
+
+    if (aspect != s.str()) {
+        ofLogNotice() << "ofxCanvas: The aspect ratio of the HTML canvas does not"
+        << " match the aspect ratio of the app window."
+        << " Mouse and touch positions will be interpolated.";
+    }
+}
+    
+void CanvasEvents::_interpolateMouse(int& x, int& y, const int& width, const int& height) {
+ 
+    if (width != ofGetWidth()) {
+        x = ofMap(x, 0, width, 0, ofGetWidth());
+    }
+    
+    if (height != ofGetHeight()) {
+        y = ofMap(y, 0, height, 0, ofGetHeight());
+    }
 }
     
 void CanvasEvents::_notifyCanvasEventRecieved(ofx::JSONRPC::MethodArgs& args)
@@ -125,10 +177,16 @@ void CanvasEvents::_notifyCanvasEventRecieved(ofx::JSONRPC::MethodArgs& args)
         else if (type == "mousePressed")
         {
 
-            cout << args.params.toStyledString() << endl;
             int button = args.params["button"].asInt();
             int x = args.params["x"].asInt();
             int y = args.params["y"].asInt();
+            int width = args.params["w"].asInt();
+            int height = args.params["h"].asInt();
+            
+            if (getInterpolateMousePos())
+            {
+                _interpolateMouse(x, y, width, height);
+            }
             
             ofLogVerbose() << "ofxCanvasEvents: mousePressed event recieved";
             ofNotifyMousePressed(x, y, button);
@@ -139,6 +197,13 @@ void CanvasEvents::_notifyCanvasEventRecieved(ofx::JSONRPC::MethodArgs& args)
             int button = args.params["button"].asInt();
             int x = args.params["x"].asInt();
             int y = args.params["y"].asInt();
+            int width = args.params["w"].asInt();
+            int height = args.params["h"].asInt();
+            
+            if (getInterpolateMousePos())
+            {
+                _interpolateMouse(x, y, width, height);
+            }
             
             ofLogVerbose() << "ofxCanvasEvents: mouseReleased event recieved";
             ofNotifyMouseReleased(x, y, button);
@@ -148,6 +213,13 @@ void CanvasEvents::_notifyCanvasEventRecieved(ofx::JSONRPC::MethodArgs& args)
 
             int x = args.params["x"].asInt();
             int y = args.params["y"].asInt();
+            int width = args.params["w"].asInt();
+            int height = args.params["h"].asInt();
+            
+            if (getInterpolateMousePos())
+            {
+                _interpolateMouse(x, y, width, height);
+            }
             
             ofLogVerbose() << "ofxCanvasEvents: mouseMoved event recieved";
             ofNotifyMouseMoved(x, y);
@@ -158,6 +230,13 @@ void CanvasEvents::_notifyCanvasEventRecieved(ofx::JSONRPC::MethodArgs& args)
             int button = args.params["button"].asInt();
             int x = args.params["x"].asInt();
             int y = args.params["y"].asInt();
+            int width = args.params["w"].asInt();
+            int height = args.params["h"].asInt();
+            
+            if (getInterpolateMousePos())
+            {
+                _interpolateMouse(x, y, width, height);
+            }
             
             ofLogVerbose() << "ofxCanvasEvents: mouseDragged event recieved";
             ofNotifyMouseDragged(x, y, button);

@@ -40,6 +40,9 @@ public:
     CanvasEvents(HTTP::BasicJSONRPCServerSettings settings = HTTP::BasicJSONRPCServerSettings());
     virtual ~CanvasEvents();
     
+    void setInterpolateMousePos(bool b);
+    
+    bool getInterpolateMousePos() const;
     bool isMouseOver() const;
     
     HTTP::BasicJSONRPCServer::SharedPtr getServer();
@@ -47,8 +50,14 @@ public:
 protected:
 
     void _notifyCanvasEventRecieved(ofx::JSONRPC::MethodArgs& args);
+    void _canvasSize(ofx::JSONRPC::MethodArgs& args);
+    void _interpolateMouse(int& x, int& y, const int& width, const int& height);
 
     bool _bMouseOver;
+    bool _bInterpolateMousePos;
+    
+    int _canvasWidth;
+    int _canvasHeight;
     
     HTTP::BasicJSONRPCServer::SharedPtr _server;
 

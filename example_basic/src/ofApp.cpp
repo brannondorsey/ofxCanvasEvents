@@ -3,11 +3,12 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
     
-    ofSetWindowShape(380, 240);
+//    ofSetWindowShape(380, 240);
     
-    ofSetLogLevel(OF_LOG_VERBOSE);
+//    ofSetLogLevel(OF_LOG_VERBOSE);
     ofBackground(255);
     
+    lastKeyPressed = 0;
     message = "";
     
     ofLaunchBrowser(canvasEvents.getServer()->getURL());
@@ -22,7 +23,7 @@ void ofApp::update(){
 void ofApp::draw(){
     
     std::string isMouseOverCanvas = canvasEvents.isMouseOver() ? "TRUE" : "FALSE";
-    
+//    std::string message = "Mouse: " + ofToString((int) mouse.x) + ", " + ofToString((int) mouse.x);
     ofDrawBitmapStringHighlight(message, 15, 30);
     ofDrawBitmapStringHighlight("mouse over canvas: " + isMouseOverCanvas, 15, 50);
     
