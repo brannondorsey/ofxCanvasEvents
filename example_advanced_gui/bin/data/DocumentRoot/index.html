@@ -1,0 +1,64 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <!-- Force latest IE rendering engine or ChromeFrame if installed -->
+    <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><![endif]-->
+    <meta charset="utf-8">
+    <title>ofx::CanvasEvents</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <!-- Bootstrap styles -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <!-- Syntax highlighting. -->
+    <link rel="stylesheet" href="css/prism.css">
+    <!-- Generic page styles -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">ofx::CanvasEvents Advanced GUI Demo</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="canvas-wrapper">
+            <!-- 
+            note: the tabindex='1' attribute must be included to capture key events when the canvas is focused
+            http://stackoverflow.com/questions/12886286/addeventlistener-for-keydown-on-canvas
+            -->
+            <img id="ip-video-stream" src="http://127.0.0.1:7890/ipvideo" style="display: none;"/>
+            <canvas id="ofxCanvasEvents-canvas" touch-action="none" tabindex='1' height="350" width="500"></canvas>
+        </div>
+    </div>
+
+    <script src="./js/jquery.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <script src="./js/jquery.jsonrpcclient.js"></script>
+    <script src="./js/jquery.json.js"></script>
+    <script src="./js/ofxUtils.js"></script>
+    <script src="./js/Points.js"></script>
+    <script src="./js/ofxCanvasEvents.js"></script>
+
+    <script>
+        
+        $(document).ready(function(){
+            
+            var canvasObj = $('#ofxCanvasEvents-canvas');
+            var context = canvasObj[0].getContext('2d');
+
+            setInterval(function(){
+               
+                var image = document.getElementById('ip-video-stream');
+                context.drawImage(image, 0, 0);
+            }, 30/1000); // 30 fps
+        });
+
+    </script>
+</body> 
+</html>

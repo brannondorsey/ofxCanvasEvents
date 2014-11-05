@@ -163,18 +163,18 @@ void CanvasEvents::_notifyCanvasEventRecieved(ofx::JSONRPC::MethodArgs& args)
         else if (type == "keyPressed")
         {
 
-            int key = args.params["key"].asInt();
+            int keycode = args.params["keycode"].asInt();
             
             ofLogVerbose() << "ofxCanvasEvents: keyPressed event recieved";
-            ofNotifyKeyPressed(key);
+            ofNotifyKeyPressed(-1, keycode, -1, -1);
         }
         else if (type == "keyReleased")
         {
             
-            int key = args.params["key"].asInt();
+            int keycode = args.params["keycode"].asInt();
             
             ofLogVerbose() << "ofxCanvasEvents: keyReleased event recieved";
-            ofNotifyKeyReleased(key);
+            ofNotifyKeyReleased(-1, keycode, -1, -1);
         }
         else if (type == "mousePressed")
         {
@@ -208,6 +208,14 @@ void CanvasEvents::_notifyCanvasEventRecieved(ofx::JSONRPC::MethodArgs& args)
             }
             
             ofLogVerbose() << "ofxCanvasEvents: mouseReleased event recieved";
+            
+//            ofMouseEventArgs args;
+//            args.type = ofMouseEventArgs::Released;
+//            args.x = x;
+//            args.y = y;
+//            args.button = button;
+//            
+//            ofNotifyMouseEvent(args);
             ofNotifyMouseReleased(x, y, button);
         }
         else if (type == "mouseMoved")

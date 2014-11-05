@@ -32,7 +32,63 @@ Compatibility
 ------------
 Compatible with openFrameworks 0.8.4 and above (may work with older versions too).
 
-<!--Known issues
+Usage
+-----
+
+### Basic
+
+Create a new project using the oF Project Generator making sure to include the
+ofxCanvasEvent addon and the rest of the dependencies mentioned above. Copy the
+Document
+
+```cpp
+#include "ofMain.h"
+#include "ofxCanvasEvents.h"
+
+class ofApp : public ofBaseApp{
+
+	public:
+		void setup();
+		void update();
+		void draw();
+
+		void keyPressed(ofKeyEventArgs& args);
+		void keyReleased(ofKeyEventArgs& args);
+		void mouseMoved(int x, int y );
+		void mouseDragged(int x, int y, int button);
+		void mousePressed(int x, int y, int button);
+		void mouseReleased(int x, int y, int button);
+		void windowResized(int w, int h);
+		void dragEvent(ofDragInfo dragInfo);
+		void gotMessage(ofMessage msg);
+
+        ofx::CanvasEvents canvasEvents;
+};
+
+```
+
+### keycodes
+
+```cpp
+void keyPressed(ofKeyEventArgs& args);
+void keyReleased(ofKeyEventArgs& args);
+```
+
+```cpp
+
+void ofApp::keyPressed(ofKeyEventArgs& args){
+
+    message = "keyPressed keycode: " + ofToString(args.keycode);
+}
+
+void ofApp::keyReleased(ofKeyEventArgs& args){
+
+    message = "keyReleased keycode: " + ofToString(args.keycode);
+}
+
+```
+
+<!-- Known issues
 ------------
 Any specific (and long-living) issues/limitations you want to mention? For bugs, etc. you should use the issue tracker of your addon's repository
 
@@ -43,5 +99,3 @@ It make sense to include a version history here (newest releases first), describ
 ### Version 0.1 (Date):
 Describe relevant changes etc.
 -->
-
-
