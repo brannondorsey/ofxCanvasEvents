@@ -27,7 +27,10 @@ class ofApp : public ofBaseApp{
         void ringButtonPressed();
         
         bool bHide;
-        
+        bool bDrawing;
+    
+        ofVec2f mouse;
+    
         ofxFloatSlider radius;
         ofxColorSlider color;
         ofxVec2Slider center;

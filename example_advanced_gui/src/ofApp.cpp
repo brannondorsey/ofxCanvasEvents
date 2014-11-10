@@ -26,6 +26,7 @@ void ofApp::setup(){
 	gui->add(screenSize.setup("screen size", ""));
     
 	bHide = true;
+    bDrawing = false;
     
 	ring.loadSound("ring.wav");
     
@@ -80,7 +81,14 @@ void ofApp::draw(){
 	if( bHide ){
 		gui->draw();
 	}
-
+    
+    if (bDrawing){
+        
+        ofSetColor(255, 0, 0);
+//        ofCircle(mouse.x, mouse.y, 10);
+        ofCircle(ofGetMouseX(), ofGetMouseY(), 10);
+    }
+    
     screenImage.grabScreen(0, 0, ofGetWidth(), ofGetHeight());
     
     // This can be any kind of pixels.
@@ -116,30 +124,32 @@ void ofApp::keyReleased(ofKeyEventArgs& args){
 
 //--------------------------------------------------------------
 void ofApp::mouseMoved(int x, int y ){
-
-    ofMouseEventArgs args(ofMouseEventArgs::Moved, x, y);
-    gui->mouseMoved(args);
+    
+//    ofMouseEventArgs args(ofMouseEventArgs::Moved, x, y);
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseDragged(int x, int y, int button){
     
-    ofMouseEventArgs args(ofMouseEventArgs::Dragged, x, y, button);
-    gui->mouseDragged(args);
+    mouse.set(x, y);
+//    ofMouseEventArgs args(ofMouseEventArgs::Dragged, x, y, button);
+//    gui->mouseDragged(args);
 }
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
     
-    ofMouseEventArgs args(ofMouseEventArgs::Pressed, x, y, button);
-    gui->mousePressed(args);
+    bDrawing = true;
+//    ofMouseEventArgs args(ofMouseEventArgs::Pressed, x, y, button);
+//    gui->mousePressed(args);
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button){
     
-    ofMouseEventArgs args(ofMouseEventArgs::Released, x, y, button);
-    gui->mouseReleased(args);
+    bDrawing = false;
+//    ofMouseEventArgs args(ofMouseEventArgs::Released, x, y, button);
+//    gui->mouseReleased(args);
 }
 
 //--------------------------------------------------------------

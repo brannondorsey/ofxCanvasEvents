@@ -36,48 +36,50 @@ _canvasHeight(0)
     
     _server = HTTP::BasicJSONRPCServer::makeShared(settings);
     
+    std::string description = "Notifies ofApp of a canvas event.";
+    
     _server->registerMethod(EVENT_METHOD_PREFIX + "mouseOver",
-                            "Returns a random chunk of text to the client.",
+                            description,
                             this,
                             &CanvasEvents::_notifyCanvasEventRecieved);
     
     _server->registerMethod(EVENT_METHOD_PREFIX + "mouseOut",
-                            "Returns a random chunk of text to the client.",
+                            description,
                             this,
                             &CanvasEvents::_notifyCanvasEventRecieved);
     
     _server->registerMethod(EVENT_METHOD_PREFIX + "keyPressed",
-                           "Returns a random chunk of text to the client.",
+                           description,
                            this,
                            &CanvasEvents::_notifyCanvasEventRecieved);
     
     _server->registerMethod(EVENT_METHOD_PREFIX + "keyReleased",
-                           "Sets text from the user.",
+                           description,
                            this,
                            &CanvasEvents::_notifyCanvasEventRecieved);
     
     _server->registerMethod(EVENT_METHOD_PREFIX + "mousePressed",
-                           "Send a JSONRPC Ping Notification",
+                           description,
                            this,
                            &CanvasEvents::_notifyCanvasEventRecieved);
     
     _server->registerMethod(EVENT_METHOD_PREFIX + "mouseReleased",
-                           "Send a JSONRPC Ping Notification",
+                           description,
                            this,
                            &CanvasEvents::_notifyCanvasEventRecieved);
     
     _server->registerMethod(EVENT_METHOD_PREFIX + "mouseMoved",
-                           "Send a JSONRPC Ping Notification",
+                           description,
                            this,
                            &CanvasEvents::_notifyCanvasEventRecieved);
     
     _server->registerMethod(EVENT_METHOD_PREFIX + "mouseDragged",
-                           "Send a JSONRPC Ping Notification",
+                           description,
                            this,
                            &CanvasEvents::_notifyCanvasEventRecieved);
     
     _server->registerMethod(EVENT_METHOD_PREFIX + "canvasSize",
-                            "Send a JSONRPC Ping Notification",
+                            "Notifies the ofApp of the initial canvas size.",
                             this,
                             &CanvasEvents::_canvasSize);
     
@@ -208,14 +210,6 @@ void CanvasEvents::_notifyCanvasEventRecieved(ofx::JSONRPC::MethodArgs& args)
             }
             
             ofLogVerbose() << "ofxCanvasEvents: mouseReleased event recieved";
-            
-//            ofMouseEventArgs args;
-//            args.type = ofMouseEventArgs::Released;
-//            args.x = x;
-//            args.y = y;
-//            args.button = button;
-//            
-//            ofNotifyMouseEvent(args);
             ofNotifyMouseReleased(x, y, button);
         }
         else if (type == "mouseMoved")
